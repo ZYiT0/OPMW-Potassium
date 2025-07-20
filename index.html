@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potassium UI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --bg-primary: #181818;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a; 
+            --bg-accent: #222222; 
+            --bg-settings-item-hover: #252525; 
+            --bg-button-gradient-start: #1f1f1f;
+            --bg-button-gradient-mid: #1c1c1c;
+            --bg-button-gradient-end: #1b1b1b;
+            --bg-button-hover-gradient-start: #2a2a2a;
+            --bg-button-hover-gradient-mid: #252525;
+            --bg-button-hover-gradient-end: #222222;
+            --bg-toggle: #3A3A3C;
+            --bg-toggle-checked: #4CAF50; 
+            --bg-theme-preview-dark: #333; 
+            --bg-theme-preview-light-main: #FFF; 
+            --bg-theme-preview-light-header: #EEE; 
+            --sidebar-content-bg: #1d1d1d; 
+
+            --text-primary: #D0D0D0;
+            --text-secondary: #888888;
+            --text-tertiary: #707070; 
+            --text-placeholder: #666;
+            --text-button: #B0B0B0;
+            --text-button-hover: #D4D4D4;
+            --text-title: #CCCCCC;
+            --text-active-tab: #D0D0D0;
+
+            --border-primary: #282828;
+            --border-secondary: #1f1f1f; 
+            --border-accent: #303030; 
+            --border-toggle: #505050;
+            --border-toggle-checked: #388E3C; 
+            --border-theme-option: #333;
+            --border-theme-option-active: #4CAF50;
+
+            --icon-primary: #777777;
+            --icon-hover: #A0A0A0;
+            --icon-active: #FFFFFF;
+            --icon-search: #7f7f7f;
+            --icon-tab: currentColor;
+            --icon-tab-close: #707070;
+            --icon-tab-close-active: #A0A0A0;
+            --icon-tab-close-hover: #BBBBBB;
+            --icon-add-tab: #707070;
+            --icon-add-tab-hover: #999999;
+            --icon-button: #B0B0B0;
+            --icon-button-hover: #E0E0E0;
+        }
+
+        .light-theme {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F0F0F0;
+            --bg-tertiary: #E0E0E0; 
+            --bg-accent: #DADADA; 
+            --bg-settings-item-hover: #E5E5E5;
+            --bg-button-gradient-start: #F0F0F0;
+            --bg-button-gradient-mid: #E8E8E8;
+            --bg-button-gradient-end: #E0E0E0;
+            --bg-button-hover-gradient-start: #DADADA;
+            --bg-button-hover-gradient-mid: #D0D0D0;
+            --bg-button-hover-gradient-end: #C8C8C8;
+            --bg-toggle: #CCCCCC;
+            --sidebar-content-bg: #EAEAEA; 
+            
+            --text-primary: #222222;
+            --text-secondary: #555555;
+            --text-tertiary: #666666; 
+            --text-placeholder: #888888;
+            --text-button: #333333;
+            --text-button-hover: #000000;
+            --text-title: #333333;
+            --text-active-tab: #000000;
+
+            --border-primary: #CCCCCC;
+            --border-secondary: #DCDCDC;
+            --border-accent: #B0B0B0;
+            --border-toggle: #BBBBBB;
+            --border-theme-option: #CCC;
+
+            --icon-primary: #555555;
+            --icon-hover: #222222;
+            --icon-active: #000000;
+            --icon-search: #555555;
+            --icon-tab-close: #666666;
+            --icon-tab-close-active: #333333;
+            --icon-tab-close-hover: #000000;
+            --icon-add-tab: #666666;
+            --icon-add-tab-hover: #333333;
+            --icon-button: #333333;
+            --icon-button-hover: #000000;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary); 
+            margin: 0;
+            padding: 0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-primary);
+            box-sizing: border-box;
+            overflow: hidden; 
+        }
+
+        #app-container {
+            width: 100vw; 
+            height: 100vh; 
+            max-width: none; 
+            background-color: var(--bg-primary); 
+            border: none; 
+            border-radius: 0; 
+            box-shadow: none; 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.3s ease, border-color 0.3s ease; 
+        }
+
+        /* Only the title-bar should be draggable */
+        #app-header { background-color: var(--bg-primary); } /* Removed -webkit-app-region: drag from here */
+        .title-bar { 
+            background-color: var(--bg-primary); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 4px 10px; 
+            height: 30px; 
+            -webkit-app-region: drag; /* Make the title bar draggable */
+        }
+        .title-bar .title-left-group { display: flex; align-items: center; }
+        .title-bar .title { font-size: 13px; font-weight: 500; color: var(--text-title); margin-right: 20px; }
+        
+        .top-center-actions { 
+            display: flex; 
+            align-items: center; 
+            gap: 22px; 
+            position: absolute; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            -webkit-app-region: no-drag; /* Prevent dragging on these icons */
+        }
+        .action-icon-wrapper { position: relative; padding-bottom: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .action-icon-wrapper svg { width: 20px; height: 20px; stroke: var(--icon-primary); stroke-width: 2; fill: none; transition: stroke 0.2s ease, fill 0.2s ease; display: block; }
+        .action-icon-wrapper:hover svg { stroke: var(--icon-hover); }
+        .action-icon-wrapper.palette-icon svg circle { fill: var(--icon-primary); stroke: none; transition: fill 0.2s ease; }
+        .action-icon-wrapper.palette-icon svg path { stroke: var(--icon-primary); fill: none; transition: stroke 0.2s ease; }
+        .action-icon-wrapper.palette-icon:hover svg circle { fill: var(--icon-hover); }
+        .action-icon-wrapper.palette-icon:hover svg path { stroke: var(--icon-hover); }
+        .action-icon-wrapper.wrench-icon svg { transform: scaleX(-1); }
+        .action-icon-wrapper.active-section-indicator svg { stroke: var(--icon-active); }
+        .action-icon-wrapper.active-section-indicator.palette-icon svg path { stroke: var(--icon-active); }
+        .action-icon-wrapper.active-section-indicator.palette-icon svg circle { fill: var(--icon-active); }
+        .action-icon-wrapper.palette-icon:not(.active-section-indicator) svg path { stroke: var(--icon-primary); }
+        .action-icon-wrapper.palette-icon:not(.active-section-indicator) svg circle { fill: var(--icon-primary); }
+        .action-icon-wrapper.palette-icon:not(.active-section-indicator):hover svg path { stroke: var(--icon-hover); }
+        .action-icon-wrapper.palette-icon:not(.active-section-indicator):hover svg circle { fill: var(--icon-hover); }
+        .action-icon-wrapper.active-section-indicator::after { content: ''; display: block; width: 100%; height: 3px; background-color: var(--icon-active); position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); border-radius: 1px; }
+        
+        .title-bar-window-controls { display: flex; align-items: center; -webkit-app-region: no-drag; margin-left: auto; } /* Prevent dragging on window controls */
+        .title-bar-window-controls svg { 
+            width: 16px; 
+            height: 16px; 
+            stroke: var(--icon-primary); 
+            stroke-width: 1.5; 
+            margin-left: 18px; 
+            cursor: pointer; 
+            transition: stroke 0.2s ease;
+        }
+        .title-bar-window-controls svg:hover { stroke: var(--icon-hover); }
+
+        #tab-bar { 
+            background-color: var(--bg-primary); 
+            display: flex; 
+            align-items: center; 
+            padding: 0 4px 0 0; 
+            height: 34px; 
+            overflow: hidden; 
+            border-top: none; 
+            -webkit-app-region: no-drag; /* Prevent dragging on the tab bar */
+        }
+        
+        #tabs-and-add-button-container { display: flex; align-items: flex-end; flex-grow: 1; height: 100%; overflow: hidden; }
+        #tabs-container { display: flex; align-items: flex-end; overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--bg-tertiary) var(--bg-primary); height: 100%; max-width: calc(100% - 30px); }
+        .tab { display: flex; align-items: center; padding: 8px 10px; margin-right: 1px; background-color: var(--bg-primary); color: var(--text-inactive-tab); font-size: 12px; font-weight: 400; cursor: pointer; border-radius: 0; border: none; box-sizing: border-box; position: relative; bottom: -1px; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; flex-shrink: 0; }
+        .tab:first-of-type { margin-left: 0; }
+        .tab.active { background-color: var(--bg-tertiary); color: var(--text-active-tab); z-index: 1; }
+        .tab-icon { margin-right: 6px; width: 14px; height: 14px; fill: var(--icon-tab); stroke: none; opacity: 0.7; flex-shrink: 0; }
+        .active .tab-icon { opacity: 1; }
+        .tab-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tab-name-input { background-color: var(--bg-tertiary); color: var(--text-active-tab); border: 1px solid var(--border-accent); font-size: 12px;}
+        .tab-close-btn { margin-left: 8px; color: var(--icon-tab-close); font-size: 17px; font-weight: 300; background-color: transparent !important; border: none; padding: 0 2px; cursor: pointer; line-height: 1; align-self: center; flex-shrink: 0; }
+        .active .tab-close-btn { color: var(--icon-tab-close-active); } 
+        .tab-close-btn:hover { color: var(--icon-tab-close-hover); }
+        #add-tab-button { color: var(--icon-add-tab); font-size: 20px; font-weight: 300; padding: 0px 8px; background-color: transparent !important; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; margin-left: 2px; flex-shrink: 0; position: relative; bottom: -1px; }
+        #add-tab-button:hover { color: var(--icon-add-tab-hover); }
+        #tab-bar-search-container { display: flex; align-items: center; background-color: var(--bg-accent); border: none; border-radius: 4px; padding: 0 8px; margin-left: auto; margin-right: 0px; height: 26px; width: 210; flex-shrink: 0; }
+        #tab-bar-search-container svg { width: 14px; height: 14px; stroke: var(--icon-search); stroke-width: 2; margin-right: 6px; flex-shrink: 0; }
+        #tab-bar-search-input { background: transparent; border: none; outline: none; color: var(--text-primary); font-size: 12px; flex-grow: 1; width: 100%; }
+        #tab-bar-search-input::placeholder { color: var(--text-placeholder); }
+        
+        #app-body { flex-grow: 1; display: flex; overflow: hidden; border-top: 1px solid var(--border-secondary); position: relative; }
+        #app-body.settings-view-active, 
+        #app-body.theme-view-active { 
+            border-top: none; 
+        }
+        #editor-view-wrapper { display: flex; width: 100%; height: 100%; }
+        #main-editor-content { flex-grow: 1; display: flex; overflow: hidden; background-color: var(--bg-secondary); }
+        #monaco-editor-container { width: 100%; height: 100%; background-color: var(--bg-secondary); }
+        .monaco-editor .monaco-editor-background, .monaco-editor .margin { background-color: var(--bg-secondary) !important; }
+        
+        #right-sidebar { 
+            width: 230px; 
+            background-color: var(--bg-primary); 
+            border-left: 1px solid var(--border-secondary); 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+            padding: 0; 
+        }
+        .sidebar-main-content { 
+            flex-grow: 1; 
+            background-color: var(--sidebar-content-bg); 
+            padding: 10px; 
+            overflow-y: auto; 
+            color: var(--text-secondary); 
+            font-size: 12px; 
+        }
+
+        #settings-view, #theme-view { width: 100%; height: 100%; background-color: var(--bg-primary); padding: 20px; box-sizing: border-box; display: none; overflow-y: auto; }
+        
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-primary); } 
+        .setting-item:last-of-type { border-bottom: none; } /* Remove border for the last item in a group */
+
+        .setting-label-group { display: flex; flex-direction: column; }
+        .setting-label-group .label { font-size: 14px; color: var(--text-primary); font-weight: 500; }
+        .setting-label-group .description { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .toggle-switch { position: relative; display: inline-block; width: 22px; height: 22px; cursor: pointer; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-toggle); border: 1px solid var(--border-toggle); transition: .3s; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .slider:before { content: none; }
+        input:checked + .slider { background-color: var(--bg-toggle-checked); border-color: var(--border-toggle-checked); }
+        input:checked + .slider::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 12px; border: solid white; border-width: 0 2.5px 2.5px 0; transform: translate(-50%, -60%) rotate(45deg); display: block; }
+        
+        .theme-options-container { display: flex; flex-direction: column; gap: 15px; }
+        .theme-option-wrapper { display: flex; align-items: center; padding: 10px; border: 2px solid var(--border-theme-option); border-radius: 6px; cursor: pointer; transition: border-color 0.3s ease, box-shadow 0.3s ease; background-color: var(--bg-secondary); }
+        .theme-option-wrapper:hover { border-color: var(--border-theme-option-active); }
+        .theme-option-wrapper.active-theme { border-color: var(--border-theme-option-active); box-shadow: 0 0 8px var(--border-theme-option-active); } 
+        .theme-preview { width: 80px; height: 50px; border-radius: 4px; margin-right: 15px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border-primary); }
+        .theme-preview-dark .preview-header { background-color: var(--bg-theme-preview-dark); height: 15px; }
+        .theme-preview-dark .preview-body { background-color: #444; flex-grow: 1; }
+        .theme-preview-light .preview-header { background-color: var(--bg-theme-preview-light-header); height: 15px; }
+        .theme-preview-light .preview-body { background-color: var(--bg-theme-preview-light-main); flex-grow: 1; }
+        .theme-label { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+
+        #action-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background-color: var(--bg-primary); border-top: 1px solid var(--border-secondary); height: auto; -webkit-app-region: no-drag; /* Prevent dragging on the action bar */ }
+        .action-buttons-right { display: flex; align-items: center; }
+        #action-bar button { background-image: linear-gradient(to bottom, var(--bg-button-gradient-start), var(--bg-button-gradient-mid), var(--bg-button-gradient-end)); color: var(--text-button); border: 1px solid var(--border-accent); border-radius: 4px; padding: 8px 14px; margin-left: 8px; cursor: pointer; font-size: 12.5px; font-weight: 500; display: flex; align-items: center; justify-content: center; transition: background-image 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        #action-bar button#attach-button { margin-left: 0; }
+        .action-buttons-right button:first-child { margin-left: 0; }
+        #action-bar button:hover { background-image: linear-gradient(to bottom, var(--bg-button-hover-gradient-start), var(--bg-button-hover-gradient-mid), var(--bg-button-hover-gradient-end)); color: var(--text-button-hover); border-color: var(--border-accent); }
+        #action-bar button svg { width: 17px; height: 17px; stroke: var(--icon-button); stroke-width: 1.5; fill: none; margin-right: 8px; transition: stroke 0.2s ease; }
+        #action-bar button:hover svg { stroke: var(--icon-button-hover); }
+        .message-modal-overlay { background-color: rgba(0,0,0,0.7); position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .message-modal { background-color: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: 8px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-align: center; max-width: 400px; width: 90%; }
+        .message-modal p { margin-bottom: 20px; color: var(--text-primary); font-size: 14px; }
+        .message-modal button { background-color: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-accent); border-radius: 4px; padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        .message-modal button:hover { background-color: var(--bg-accent); color: var(--text-button-hover); border-color: var(--border-accent); }
+
+        /* Styles for port status indicators */
+        #port-status-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to the next line */
+            gap: 10px; /* Space between each port status item */
+            margin-top: 15px; /* Space from the setting above */
+            padding-top: 15px; /* Internal padding */
+            border-top: 1px solid var(--border-primary); /* Separator */
+        }
+
+        .port-status-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .port-status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: gray; /* Default: disconnected/unknown */
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .port-status-indicator.connected {
+            background-color: #4CAF50; /* Green: connected */
+        }
+        .port-status-indicator.disconnected {
+            background-color: #f44336; /* Red: disconnected */
+        }
+
+        /* Styles for radio buttons and select dropdown */
+        .radio-group { display: flex; gap: 20px; align-items: center; }
+        .radio-group label { display: flex; align-items: center; cursor: pointer; font-size: 13px; color: var(--text-primary); }
+        .radio-group input[type="radio"] { margin-right: 6px; }
+        
+        #single-port-select {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-accent);
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 13px;
+            appearance: none; /* Remove default dropdown arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            width: 100px; /* Adjust width as needed */
+            margin-left: 10px; /* Space from radio button */
+        }
+        #single-port-select:focus { outline: none; border-color: var(--border-toggle-checked); }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <header id="app-header">
+            <div class="title-bar">
+                <div class="title-left-group">
+                    <span class="title">Potassium</span>
+                </div>
+                <div class="top-center-actions">
+                    <div class="action-icon-wrapper" id="action-icon-editor">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3"/>
+                            <path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/>
+                        </svg>
+                    </div>
+                    <div class="action-icon-wrapper wrench-icon" id="action-icon-settings">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                        </svg>
+                    </div>
+                    <div class="action-icon-wrapper palette-icon" id="action-icon-theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <circle cx="13.5" cy="6.5" r="1.5" /> 
+                            <circle cx="17.5" cy="10.5" r="1.5" /> 
+                            <circle cx="8.5" cy="7.5" r="1.5" /> 
+                            <circle cx="6.5" cy="12.5" r="1.5" /> 
+                            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="title-bar-window-controls">
+                    <svg id="minimize-btn" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <svg id="maximize-btn" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+                    <svg id="close-btn" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </div>
+            </div>
+             <div id="tab-bar"> 
+                <div id="tabs-and-add-button-container">
+                    <div id="tabs-container"></div>
+                    <button id="add-tab-button" title="Add new tab">+</button> 
+                </div>
+                <div id="tab-bar-search-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="tab-bar-search-input"> 
+                </div>
+            </div>
+        </header>
+    
+        <div id="app-body">
+            <div id="editor-view-wrapper"> 
+                <main id="main-editor-content"> <div id="monaco-editor-container"></div> </main>
+                <aside id="right-sidebar">
+                    <div class="sidebar-main-content"></div>
+                </aside>
+            </div>
+    
+            <div id="settings-view"> 
+                 <div class="setting-item">
+                    <div class="setting-label-group">
+                        <span class="label">Minimap</span>
+                        <span class="description">Show or hide the code minimap</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-minimap">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <span class="label">Line Numbers</span>
+                        <span class="description">Show or hide line numbers</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-linenumbers" checked> <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <span class="label">Always on top</span>
+                        <span class="description">Puts the application in the foreground</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-always-on-top">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <span class="label">Auto attach</span>
+                        <span class="description">Automatically attaches when Roblox opens</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-auto-attach">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- New Setting: Execution Port Selection -->
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <span class="label">Execution Port</span>
+                        <span class="description">Choose how scripts are executed</span>
+                    </div>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="executionPortMode" value="all" id="radio-all-ports" checked>
+                            All
+                        </label>
+                        <label>
+                            <input type="radio" name="executionPortMode" value="single" id="radio-single-port">
+                            Single
+                        </label>
+                        <select id="single-port-select" style="display: none;"></select>
+                    </div>
+                </div>
+
+                <!-- Moved Port Status Indicators -->
+                <div id="port-status-container">
+                    <!-- Port status indicators will be dynamically added here -->
+                </div>
+
+            </div>
+    
+            <div id="theme-view"> 
+                <div class="theme-options-container">
+                    <div class="theme-option-wrapper" id="theme-option-dark">
+                        <div class="theme-preview theme-preview-dark">
+                            <div class="preview-header"></div>
+                            <div class="preview-body"></div>
+                        </div>
+                        <span class="theme-label">Default Dark</span>
+                    </div>
+                    <div class="theme-option-wrapper" id="theme-option-light">
+                        <div class="theme-preview theme-preview-light">
+                            <div class="preview-header"></div>
+                            <div class="preview-body"></div>
+                        </div>
+                        <span class="theme-label">Light Theme</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <footer id="action-bar">
+            <button id="attach-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                Attach
+            </button>
+            <!-- Port status container removed from here -->
+            <div class="action-buttons-right">
+                <button id="execute-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                    Execute
+                </button>
+                <button id="clear-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    Clear
+                </button>
+                <button id="open-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V6h5.17l2 2H20v10z"/></svg> Open
+                </button>
+                <button id="save-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save
+                </button>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.47.0/min/vs/loader.min.js"></script>
+    <script>
+        let monacoEditor;
+        let tabs = [];
+        let activeTabId = null;
+        let tabCounter = 0;
+        const initialContent = '  -- Your Roblox Lua script here  '; 
+
+        let editorViewWrapper, settingsView, themeView, tabBarElement, actionBarElement, appBodyElement; 
+        let actionIconEditor, actionIconSettings, actionIconTheme; 
+        let toggleMinimapCheckbox, toggleLineNumbersCheckbox, toggleAlwaysOnTop, toggleAutoAttach;
+        let themeOptionDark, themeOptionLight; 
+        let appContainer;
+
+        const OPIUMWARE_PORTS = ["8392", "8393", "8394", "8395", "8396", "8397"];
+        let portStatusInterval;
+        let autoAttachEnabled = false;
+        let executionMode = 'all'; // 'all' or 'single'
+        let selectedSinglePort = OPIUMWARE_PORTS[0]; // Default to the first port
+
+        function showModalAlert(message) { 
+            const existingModal = document.querySelector('.message-modal-overlay');
+            if (existingModal) existingModal.remove();
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = 'message-modal-overlay';
+            const modal = document.createElement('div');
+            modal.className = 'message-modal';
+            const p = document.createElement('p');
+            p.innerHTML = message; // Use innerHTML for potential line breaks
+            const btn = document.createElement('button');
+            btn.textContent = 'OK';
+            btn.onclick = () => modalOverlay.remove();
+            modal.appendChild(p);
+            modal.appendChild(btn);
+            modalOverlay.appendChild(modal);
+            document.body.appendChild(modalOverlay);
+            btn.focus();
+        }
+
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.47.0/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            monacoEditor = monaco.editor.create(document.getElementById('monaco-editor-container'), {
+                value: '', language: 'lua', theme: 'vs-dark', 
+                automaticLayout: true,
+                fontSize: 12, 
+                minimap: { enabled: false }, 
+                lineNumbers: 'on', 
+                scrollbar: { verticalScrollbarSize: 9, horizontalScrollbarSize: 9, arrowSize: 10, useShadows: false, vertical: 'auto', horizontal: 'auto' },
+                'semanticHighlighting.enabled': true, lineNumbersMinChars: 3
+            });
+            
+            initializeUI(); 
+            addTab(null, initialContent); 
+
+            monacoEditor.onDidChangeModelContent(() => {
+                const activeTab = tabs.find(tab => tab.id === activeTabId);
+                if (activeTab) activeTab.content = monacoEditor.getValue();
+            });
+        });
+
+        function initializeUI() {
+            appContainer = document.getElementById('app-container');
+            editorViewWrapper = document.getElementById('editor-view-wrapper');
+            settingsView = document.getElementById('settings-view');
+            themeView = document.getElementById('theme-view'); 
+            tabBarElement = document.getElementById('tab-bar');
+            actionBarElement = document.getElementById('action-bar');
+            appBodyElement = document.getElementById('app-body'); 
+
+            actionIconEditor = document.getElementById('action-icon-editor');
+            actionIconSettings = document.getElementById('action-icon-settings');
+            actionIconTheme = document.getElementById('action-icon-theme'); 
+
+            toggleMinimapCheckbox = document.getElementById('toggle-minimap');
+            toggleLineNumbersCheckbox = document.getElementById('toggle-linenumbers');
+            toggleAlwaysOnTop = document.getElementById('toggle-always-on-top');
+            toggleAutoAttach = document.getElementById('toggle-auto-attach');
+
+            themeOptionDark = document.getElementById('theme-option-dark');
+            themeOptionLight = document.getElementById('theme-option-light');
+
+            // New elements for port selection
+            const radioAllPorts = document.getElementById('radio-all-ports');
+            const radioSinglePort = document.getElementById('radio-single-port');
+            const singlePortSelect = document.getElementById('single-port-select');
+
+            // Populate single-port-select dropdown
+            OPIUMWARE_PORTS.forEach(port => {
+                const option = document.createElement('option');
+                option.value = port;
+                option.textContent = port;
+                singlePortSelect.appendChild(option);
+            });
+            singlePortSelect.value = selectedSinglePort; // Set default selected value
+
+            // Event listeners for port selection radios
+            radioAllPorts.addEventListener('change', () => {
+                executionMode = 'all';
+                singlePortSelect.style.display = 'none';
+            });
+            radioSinglePort.addEventListener('change', () => {
+                executionMode = 'single';
+                singlePortSelect.style.display = 'inline-block';
+            });
+            singlePortSelect.addEventListener('change', (event) => {
+                selectedSinglePort = event.target.value;
+            });
+
+            // Set initial state based on default executionMode
+            if (executionMode === 'single') {
+                radioSinglePort.checked = true;
+                singlePortSelect.style.display = 'inline-block';
+            } else {
+                radioAllPorts.checked = true;
+                singlePortSelect.style.display = 'none';
+            }
+
+
+            // Window controls
+            document.getElementById('minimize-btn').addEventListener('click', () => {
+                window.electronAPI.minimizeWindow();
+            });
+            document.getElementById('maximize-btn').addEventListener('click', () => {
+                window.electronAPI.maximizeWindow();
+            });
+            document.getElementById('close-btn').addEventListener('click', () => {
+                window.electronAPI.closeWindow();
+            });
+
+            actionIconEditor.classList.add('active-section-indicator');
+            showEditorView(); 
+            applyTheme('dark'); 
+
+            if (monacoEditor) { 
+                 toggleMinimapCheckbox.checked = monacoEditor.getOption(monaco.editor.EditorOption.minimap).enabled;
+                 toggleLineNumbersCheckbox.checked = monacoEditor.getOption(monaco.editor.EditorOption.lineNumbers).renderType === monaco.editor.RenderLineNumbersType.On;
+            }
+
+            actionIconEditor.addEventListener('click', () => {
+                showEditorView();
+                updateActiveSectionIndicator(actionIconEditor);
+            });
+            actionIconSettings.addEventListener('click', () => {
+                showSettingsView();
+                updateActiveSectionIndicator(actionIconSettings);
+            });
+            actionIconTheme.addEventListener('click', () => { 
+                showThemeView();
+                updateActiveSectionIndicator(actionIconTheme);
+            });
+            
+            themeOptionDark.addEventListener('click', () => applyTheme('dark'));
+            themeOptionLight.addEventListener('click', () => applyTheme('light'));
+
+            toggleMinimapCheckbox.addEventListener('change', (event) => {
+                if (monacoEditor) { monacoEditor.updateOptions({ minimap: { enabled: event.target.checked } });}
+            });
+            toggleLineNumbersCheckbox.addEventListener('change', (event) => {
+                if (monacoEditor) { monacoEditor.updateOptions({ lineNumbers: event.target.checked ? 'on' : 'off' });}
+            });
+            toggleAlwaysOnTop.addEventListener('change', (event) => {
+                showModalAlert(`Always on top: ${event.target.checked ? 'Enabled' : 'Disabled'} (Not implemented in this demo)`);
+            });
+            toggleAutoAttach.addEventListener('change', (event) => {
+                autoAttachEnabled = event.target.checked;
+                if (autoAttachEnabled) {
+                    startPortStatusCheck();
+                    attemptAutoAttach();
+                } else {
+                    stopPortStatusCheck();
+                }
+                showModalAlert(`Auto attach: ${event.target.checked ? 'Enabled' : 'Disabled'}`);
+            });
+
+            // Initial setup for port status display (now in settings view)
+            setupPortStatusDisplay();
+            startPortStatusCheck(); // Start checking port status on load
+        }
+
+        function updateActiveSectionIndicator(activeWrapper) {
+             document.querySelectorAll('.top-center-actions .action-icon-wrapper').forEach(w => {
+                w.classList.remove('active-section-indicator');
+            });
+            if (activeWrapper) {
+                activeWrapper.classList.add('active-section-indicator');
+            }
+        }
+        
+        function showEditorView() {
+            editorViewWrapper.style.display = 'flex';
+            settingsView.style.display = 'none';
+            themeView.style.display = 'none'; 
+            tabBarElement.style.display = 'flex';
+            actionBarElement.style.display = 'flex';
+            appBodyElement.classList.remove('settings-view-active', 'theme-view-active'); 
+        }
+
+        function showSettingsView() {
+            editorViewWrapper.style.display = 'none';
+            settingsView.style.display = 'block';
+            themeView.style.display = 'none'; 
+            tabBarElement.style.display = 'none';
+            actionBarElement.style.display = 'none';
+            appBodyElement.classList.add('settings-view-active'); 
+            appBodyElement.classList.remove('theme-view-active');
+            // Ensure port status is updated when settings view is shown
+            updatePortStatus();
+        }
+        
+        function showThemeView() { 
+            editorViewWrapper.style.display = 'none';
+            settingsView.style.display = 'none';
+            themeView.style.display = 'block';
+            tabBarElement.style.display = 'none';
+            actionBarElement.style.display = 'none';
+            appBodyElement.classList.add('theme-view-active');
+            appBodyElement.classList.remove('settings-view-active');
+        }
+
+        function applyTheme(themeName) {
+            appContainer.classList.remove('light-theme'); 
+            document.querySelectorAll('.theme-option-wrapper').forEach(el => el.classList.remove('active-theme'));
+
+            let monacoTheme = 'vs-dark'; 
+            if (themeName === 'light') {
+                appContainer.classList.add('light-theme');
+                monacoTheme = 'vs'; 
+                if(themeOptionLight) themeOptionLight.classList.add('active-theme');
+            } else { 
+                if(themeOptionDark) themeOptionDark.classList.add('active-theme');
+            }
+
+            if (monacoEditor) {
+                monaco.editor.setTheme(monacoTheme);
+            }
+        }
+
+        const tabsContainer = document.getElementById('tabs-container'); 
+        const addTabButton = document.getElementById('add-tab-button'); 
+        
+        function renderTabs() {
+            while (tabsContainer.firstChild) {
+                tabsContainer.removeChild(tabsContainer.firstChild);
+            }
+            tabs.forEach((tab, index) => {
+                const tabElement = document.createElement('div');
+                tabElement.className = 'tab' + (tab.id === activeTabId ? ' active' : '');
+                tabElement.dataset.tabId = tab.id;
+                tabElement.title = tab.name;
+                const iconSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                iconSvg.setAttribute("class", "tab-icon");
+                iconSvg.setAttribute("viewBox", "0 0 24 24");
+                iconSvg.setAttribute("fill", "currentColor"); 
+                iconSvg.innerHTML = '<path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"></path>'; 
+                tabElement.appendChild(iconSvg);
+                const tabNameSpan = document.createElement('span');
+                tabNameSpan.className = 'tab-name';
+                tabNameSpan.textContent = tab.name;
+                tabElement.appendChild(tabNameSpan);
+                tabNameSpan.addEventListener('dblclick', () => startRenameTab(tab, tabNameSpan));
+                const closeButton = document.createElement('button');
+                closeButton.className = 'tab-close-btn';
+                closeButton.innerHTML = '&times;';
+                closeButton.title = 'Close tab';
+                closeButton.onclick = (e) => { e.stopPropagation(); removeTab(tab.id); };
+                tabElement.appendChild(closeButton);
+                tabElement.onclick = () => switchTab(tab.id);
+                tabsContainer.appendChild(tabElement); 
+            });
+            if (tabs.length === 0 && monacoEditor) monacoEditor.setValue("");
+        }
+
+        function addTab(name = null, content = null) { 
+            tabCounter++; 
+            const newTabId = 'tab-' + tabCounter;
+            const newTabName = name || `Untitled Tab ${tabCounter}`; 
+            const newTabContent = content !== null ? content : initialContent; 
+            tabs.push({ id: newTabId, name: newTabName, content: newTabContent });
+            if (tabs.length === 1 && !activeTabId) { 
+                 activeTabId = newTabId;
+            }
+            switchTab(newTabId); 
+        }
+        function switchTab(tabId) { 
+            activeTabId = tabId; 
+            const newActiveTab = tabs.find(tab => tab.id === tabId);
+            if (newActiveTab && monacoEditor) {
+                 monacoEditor.setValue(newActiveTab.content || '');
+                 monacoEditor.focus();
+            } else if (!newActiveTab && tabs.length > 0) { 
+                activeTabId = tabs[0].id;
+                if(monacoEditor) monacoEditor.setValue(tabs[0].content || '');
+            } else if (!newActiveTab && tabs.length === 0) {
+                activeTabId = null;
+                if(monacoEditor) monacoEditor.setValue('');
+            }
+            renderTabs();
+        }
+        function removeTab(tabIdToRemove) { 
+            const tabIndex = tabs.findIndex(tab => tab.id === tabIdToRemove);
+            if (tabIndex === -1) return;
+            tabs.splice(tabIndex, 1);
+            if (activeTabId === tabIdToRemove) {
+                if (tabs.length > 0) { 
+                    const newActiveIndex = Math.max(0, tabIndex - 1); 
+                    switchTab(tabs[newActiveIndex].id); 
+                } else { 
+                    activeTabId = null; 
+                    if (monacoEditor) monacoEditor.setValue(''); 
+                    addTab(null, initialContent); 
+                }
+            } else {
+                 renderTabs(); 
+            }
+             if (tabs.length === 0) { 
+                addTab(null, initialContent);
+            }
+        }
+        function startRenameTab(tab, tabNameSpan) { 
+            tabNameSpan.style.display = 'none'; 
+            const input = document.createElement('input');
+            input.type = 'text'; input.className = 'tab-name-input'; input.value = tab.name;
+            tabNameSpan.parentNode.insertBefore(input, tabNameSpan); 
+            input.focus(); input.select();
+            const finishRename = () => {
+                const newName = input.value.trim();
+                tab.name = newName || `Untitled Tab ${tab.id.split('-')[1]}`; 
+                if(input.parentNode) input.parentNode.removeChild(input);
+                tabNameSpan.textContent = tab.name; tabNameSpan.style.display = ''; tabNameSpan.parentNode.title = tab.name; 
+            };
+            input.addEventListener('blur', finishRename);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') finishRename();
+                else if (e.key === 'Escape') { if(input.parentNode) input.parentNode.removeChild(input); tabNameSpan.style.display = ''; }
+            });
+        }
+
+        // --- Opiumware Integration Logic ---
+
+        function setupPortStatusDisplay() {
+            const container = document.getElementById('port-status-container');
+            container.innerHTML = ''; // Clear existing
+            OPIUMWARE_PORTS.forEach(port => {
+                const item = document.createElement('div');
+                item.className = 'port-status-item';
+                item.innerHTML = `
+                    <span id="port-indicator-${port}" class="port-status-indicator"></span>
+                    <span>${port}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function updatePortStatus() {
+            for (const port of OPIUMWARE_PORTS) {
+                const isConnected = await window.electronAPI.checkPortStatus(port);
+                const indicator = document.getElementById(`port-indicator-${port}`);
+                if (indicator) {
+                    indicator.classList.remove('connected', 'disconnected');
+                    if (isConnected) {
+                        indicator.classList.add('connected');
+                    } else {
+                        indicator.classList.add('disconnected');
+                    }
+                }
+            }
+        }
+
+        function startPortStatusCheck() {
+            if (portStatusInterval) clearInterval(portStatusInterval);
+            portStatusInterval = setInterval(updatePortStatus, 3000); // Check every 3 seconds
+            updatePortStatus(); // Initial check immediately
+        }
+
+        function stopPortStatusCheck() {
+            if (portStatusInterval) {
+                clearInterval(portStatusInterval);
+                portStatusInterval = null;
+            }
+        }
+
+        async function attemptAutoAttach() {
+            if (!autoAttachEnabled) return;
+            showModalAlert("Attempting auto-attach to Opiumware...");
+            const resultPort = await window.electronAPI.autoAttach(); 
+            if (resultPort.startsWith('Failed')) {
+                showModalAlert(`Auto-attach failed: ${resultPort}`);
+            } else {
+                showModalAlert(`Auto-attach successful on port: ${resultPort}`);
+            }
+            updatePortStatus(); // Update status after auto-attach attempt
+        }
+
+        // Event Listeners for action buttons
+        addTabButton.onclick = () => addTab(null, initialContent); 
+
+        document.getElementById('attach-button').onclick = async () => {
+            showModalAlert("Manually attempting to attach...");
+            const resultPort = await window.electronAPI.autoAttach();
+            if (resultPort.startsWith('Failed')) {
+                showModalAlert(`Manual attach failed: ${resultPort}`);
+            } else {
+                showModalAlert(`Manual attach successful on port: ${resultPort}`);
+            }
+            updatePortStatus(); // Update status after manual attach attempt
+        }; 
+
+        document.getElementById('execute-button').onclick = async () => { 
+            const activeTab = tabs.find(tab => tab.id === activeTabId);
+            if (activeTab && monacoEditor) {
+                let scriptContent = monacoEditor.getValue();
+                scriptContent = "OpiumwareScript " + scriptContent;
+
+                showModalAlert("Executing script...");
+                console.log(`Execute: Running script from "${activeTab.name}"...\n\n${scriptContent.substring(0,100)}${scriptContent.length > 100 ? '...' : ''}`);
+
+                let portsToExecute = [];
+                if (executionMode === 'all') {
+                    portsToExecute = OPIUMWARE_PORTS;
+                } else { // single port mode
+                    portsToExecute = [selectedSinglePort];
+                }
+
+                let successfulPorts = [];
+                let failedPorts = [];
+
+                for (const port of portsToExecute) {
+                    try {
+                        const result = await window.electronAPI.connectAndSend({ code: scriptContent, port: port }); 
+                        if (result.startsWith('Successfully executed')) {
+                            successfulPorts.push(port);
+                        } else {
+                            // Simplify error message for ECONNREFUSED and timeouts
+                            let errorMessage = result.replace(/Failed to connect or send on port \d+: /, '');
+                            if (errorMessage.includes('ECONNREFUSED')) {
+                                errorMessage = 'Connection refused.';
+                            } else if (errorMessage.includes('timed out')) {
+                                errorMessage = 'Timed out.';
+                            }
+                            failedPorts.push(`${port} (${errorMessage})`);
+                        }
+                    } catch (error) {
+                        let errorMessage = error.message;
+                        if (errorMessage.includes('ECONNREFUSED')) {
+                            errorMessage = 'Connection refused.';
+                        } else if (errorMessage.includes('timed out')) {
+                            errorMessage = 'Timed out.';
+                        }
+                        failedPorts.push(`${port} (Error: ${errorMessage})`);
+                    }
+                }
+
+                let finalMessage = "";
+                if (successfulPorts.length > 0) {
+                    finalMessage += `Executed on: ${successfulPorts.join(', ')}.`;
+                }
+                if (failedPorts.length > 0) {
+                    if (successfulPorts.length > 0) {
+                        finalMessage += "<br>"; // Use <br> for line break in HTML
+                    }
+                    finalMessage += `Failed on: ${failedPorts.join(', ')}.`;
+                }
+                if (successfulPorts.length === 0 && failedPorts.length === 0) {
+                    finalMessage = "No execution attempts were made.";
+                } else if (successfulPorts.length === 0 && failedPorts.length > 0) {
+                    finalMessage = `Execution failed on all attempts:<br>${failedPorts.join('<br>')}`;
+                }
+
+                showModalAlert(finalMessage);
+                updatePortStatus(); // Update status after execution attempt
+            } else {
+                showModalAlert('No active tab or editor content to execute.');
+                console.log('Execute: No active tab or editor.');
+            }
+        };
+
+        document.getElementById('clear-button').onclick = () => { if (monacoEditor) monacoEditor.setValue(''); };
+        document.getElementById('open-button').onclick = () => { showModalAlert('Open functionality not yet implemented.'); }; 
+        document.getElementById('save-button').onclick = () => { showModalAlert('Save functionality not yet implemented.'); }; 
+        
+    </script>
+</body>
+</html>
