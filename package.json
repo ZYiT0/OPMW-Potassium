@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "50th try on making it work with opmw",
   "main": "main.js",
+  "author": "ZYiT0",
+  "license": "MIT",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist": "electron-builder"
   },
   "keywords": [
     "Electron",
@@ -12,12 +15,30 @@
     "Roblox",
     "UI"
   ],
-  "author": "ZYiT0",
-  "license": "MIT",
   "devDependencies": {
-    "electron": "^29.0.0"
+    "electron": "^29.0.0",
+    "electron-builder": "^23.6.0"
   },
   "dependencies": {
     "p-timeout": "^6.0.0"
+  },
+  "build": {
+    "appId": "com.opiumware.potassium",
+    "productName": "Opiumware Potassium",
+    "mac": {
+      "icon": "icon/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ]
+    },
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    }
   }
 }
