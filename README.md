@@ -1,3 +1,3 @@
 
 # OPMW-Potassium
-Ui for the MacOs roblox scripting utility discord.gg/getopium
+Ui for the MacOs Roblox scripting utility discord.gg/getopium
