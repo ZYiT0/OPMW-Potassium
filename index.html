@@ -507,7 +507,7 @@
         let tabs = [];
         let activeTabId = null;
         let tabCounter = 0;
-        const initialContent = '  -- Your Roblox Lua script here  '; 
+        const initialContent = '  -- Your script here  '; 
 
         let editorViewWrapper, settingsView, themeView, tabBarElement, actionBarElement, appBodyElement; 
         let actionIconEditor, actionIconSettings, actionIconTheme; 
@@ -518,7 +518,7 @@
         const OPIUMWARE_PORTS = ["8392", "8393", "8394", "8395", "8396", "8397"];
         let portStatusInterval;
         let autoAttachEnabled = false;
-        let executionMode = 'all'; // 'all' or 'single'
+        let executionMode = 'single'; // 'all' or 'single'
         let selectedSinglePort = OPIUMWARE_PORTS[0]; // Default to the first port
 
         function showModalAlert(message) { 
